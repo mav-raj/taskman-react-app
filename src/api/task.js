@@ -4,10 +4,10 @@ import QueryString from "query-string";
 
 import { getAuthToken } from "./storage";
 
-// URL for team
-const URL = `${baseURL}/team`;
+// URL for task
+const URL = `${baseURL}/task`;
 
-export const getTeams = async () => {
+export const getTasks = async () => {
   const token = getAuthToken();
   let res = await axios.get(URL, {
     headers: {
@@ -16,12 +16,28 @@ export const getTeams = async () => {
   });
   return res.data;
 };
-export const createNewTeam = async (name, description, users) => {
+export const createNewTask = async (
+  name,
+  description,
+  start_time,
+  end_time,
+  priority,
+  user_assigned,
+  project
+) => {
   const token = getAuthToken();
 
   let res = await axios.post(
     URL,
-    QueryString.stringify({ name, description, users }),
+    QueryString.stringify({
+      name,
+      description,
+      start_time,
+      end_time,
+      priority,
+      user_assigned,
+      project
+    }),
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

@@ -10,6 +10,8 @@ import PrivateRoute from "./components/privateRoute/privateRoute";
 import Workspace from "./components/workspace/workspace";
 import Team from "./components/team/team";
 import User from "./components/user/user";
+import SingleWorkspace from "./components/workspace/singleWorkspace";
+import SingleProject from "./components/workspace/project/singleProject";
 
 //
 class App extends Component {
@@ -24,6 +26,16 @@ class App extends Component {
             path="/dashboard/workspace"
             exact
             component={Workspace}
+          />
+          <PrivateRoute
+            path="/dashboard/workspace/:id"
+            exact
+            component={SingleWorkspace}
+          />
+          <PrivateRoute
+            path="/dashboard/workspace/project/:id"
+            exact
+            component={SingleProject}
           />
           <PrivateRoute path="/dashboard/team" exact component={Team} />
           <PrivateRoute path="/dashboard/user" exact component={User} />

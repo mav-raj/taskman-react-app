@@ -29,7 +29,6 @@ export const getUsers = async () => {
 
 export const createNewUser = async (name, email, password) => {
   const token = getAuthToken();
-  console.log(name, email, password);
 
   let res = await axios.post(
     URL,

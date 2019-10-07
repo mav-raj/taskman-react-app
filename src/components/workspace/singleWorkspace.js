@@ -1,21 +1,53 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import M from "materialize-css";
-import "./workspace.css";
-import {
-  fetchWorkspaces,
-  addNewWorkspace
-} from "../../actions/workspaceAction";
-import { connect } from "react-redux";
-class Workspace extends Component {
+
+//actions
+import { addNewProject, fetchProjects } from "../../actions/projectsAction";
+
+class SingleWorkspace extends Component {
   state = {
     name: "",
-    description: ""
+    description: "",
+    // projects: [],
+    newProjectName: "",
+    newProjectDescription: ""
   };
+  id = "";
   componentDidMount() {
-    this.props.getWorkspaces();
+    this.id = this.props.match.params.id;
     let modal = document.querySelectorAll(".modal");
     M.Modal.init(modal, {});
+    let workspace = {};
+    if (!this.id) {
+      workspace = {
+        name: "",
+        description: ""
+      };
+    } else {
+      workspace = this.props.workspace.workspaces.filter(
+        ws => ws._id === this.id
+      )[0];
+      // preventing from crash if reached by direct route
+      if (!workspace) {
+        workspace = {
+          name: "",
+          description: ""
+        };
+      }
+    }
+    // let projectsInThisWorkspace = [];
+    // projectsInThisWorkspace = this.props.project.projects.filter(
+    //   project => project.workspace === this.id
+    // );
+    // console.log(projectsInThisWorkspace);
+
+    this.setState({
+      name: workspace.name,
+      description: workspace.description
+      // projects: [...projectsInThisWorkspace]
+    });
   }
 
   handleInputChange = event => {
@@ -24,11 +56,11 @@ class Workspace extends Component {
 
   handleAddWorkspaceClick = event => {
     event.preventDefault();
-    const { name, description } = this.state;
-    this.props.addWorkspace(name, description);
+    const { newProjectName, newProjectDescription } = this.state;
+    this.props.addProject(newProjectName, newProjectDescription, this.id);
   };
 
-  renderSingleWorkspaceItem = (id, name, description) => {
+  renderProject = (id, name, description) => {
     return (
       <li className="collection-item" key={id}>
         <div>
@@ -37,7 +69,7 @@ class Workspace extends Component {
           <span style={{ marginLeft: "5px" }}>{description}</span>
           <NavLink
             exact
-            to={`/dashboard/workspace/${id}`}
+            to={`/dashboard/workspace/project/${id}`}
             className="secondary-content"
           >
             <i className="material-icons">arrow_forward</i>
@@ -47,30 +79,38 @@ class Workspace extends Component {
     );
   };
   render() {
-    let { name, description } = this.state;
-    let workspaces = [];
-    workspaces = this.props.workspace.workspaces;
+    const {
+      name,
+      description,
+      newProjectName,
+      newProjectDescription
+    } = this.state;
+    let projects = [];
+    projects = this.props.project.projects.filter(
+      project => project.workspace === this.id
+    );
     return (
       <div>
         <div className="container">
           <ul className="collection with-header">
             <li className="collection-header">
-              {workspaces.length === 0 ? (
-                <h4>Your workspace is empty..create one</h4>
+              <h4>{name}</h4>
+              <p>{description}</p>
+            </li>
+            <li className="collection-header">
+              {projects.length === 0 ? (
+                <h5>No projects in this workspace</h5>
               ) : (
-                <h4>Your Workspaces</h4>
+                <h5>Projects</h5>
               )}
             </li>
-            {workspaces.map(workspace =>
-              this.renderSingleWorkspaceItem(
-                workspace._id,
-                workspace.name,
-                workspace.description
-              )
+            {projects.map(project =>
+              this.renderProject(project._id, project.name, project.description)
             )}
+
             <li className="collection-item">
               <a className="modal-trigger" href="#add">
-                Add more workspaces
+                Add more projects
               </a>
             </li>
           </ul>
@@ -79,7 +119,7 @@ class Workspace extends Component {
         <div id="add" className="modal">
           <div className="container">
             <div className="modal-content">
-              <h4>Add Workspace</h4>
+              <h4>Add Project</h4>
               <div className="row">
                 <form
                   className="col s12 m12 l12"
@@ -87,26 +127,26 @@ class Workspace extends Component {
                 >
                   <div className="input-field col s12">
                     <input
-                      id="name"
-                      name="name"
+                      id="newProjectName"
+                      name="newProjectName"
                       type="text"
                       className="validate"
-                      value={name}
+                      value={newProjectName}
                       required
                       onChange={this.handleInputChange}
                     />
-                    <label htmlFor="name">Workspace Name</label>
+                    <label htmlFor="name">Project Name</label>
                   </div>
                   <div className="input-field col s12">
                     <input
-                      id="description"
-                      name="description"
+                      id="newProjectDescription"
+                      name="newProjectDescription"
                       type="text"
                       className="validate"
-                      value={description}
+                      value={newProjectDescription}
                       onChange={this.handleInputChange}
                     />
-                    <label htmlFor="email">Workspace Description</label>
+                    <label htmlFor="email">Project Description</label>
                   </div>
                   <div className="col s12">
                     <input
@@ -126,14 +166,13 @@ class Workspace extends Component {
   }
 }
 
-const mapStateToProps = ({ workspace }) => ({ workspace });
+const mapStateToProps = ({ workspace, project }) => ({ workspace, project });
 const mapDispatchToProps = dispatch => ({
-  getWorkspaces: () => dispatch(fetchWorkspaces()),
-  addWorkspace: (name, description) =>
-    dispatch(addNewWorkspace(name, description))
+  addProject: (name, description, workspace) =>
+    dispatch(addNewProject(name, description, workspace)),
+  getProjects: () => dispatch(fetchProjects())
 });
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Workspace);
+)(SingleWorkspace);

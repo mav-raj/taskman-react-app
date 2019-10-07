@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.modal {
+  max-height: 80% !important;
+  overflow: hidden !important ;
+}
+.input-field {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}

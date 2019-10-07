@@ -1,4 +1,4 @@
-import { GET_ALL_TEAM } from "../actions/actionTypes";
+import { GET_ALL_TEAM, ADD_NEW_TEAM } from "../actions/actionTypes";
 const initialState = {
   teams: []
 };
@@ -9,6 +9,11 @@ const teamReducer = (state = initialState, action) => {
       return {
         ...state,
         teams: [...action.payload]
+      };
+    case ADD_NEW_TEAM:
+      return {
+        ...state,
+        teams: [...state.teams, action.payload]
       };
     default:
       return state;

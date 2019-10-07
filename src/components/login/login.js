@@ -7,6 +7,11 @@ import { getUser } from "../../api/storage";
 
 //actions
 import { loginAction } from "../../actions/authActions";
+import { fetchWorkspaces } from "../../actions/workspaceAction";
+import { fetchTeams } from "../../actions/teamsAction";
+import { fetchUsers } from "../../actions/userAction";
+import { fetchProjects } from "../../actions/projectsAction";
+import { fetchTasks } from "../../actions/taskAction";
 
 import { connect } from "react-redux";
 
@@ -24,6 +29,11 @@ class Login extends Component {
     const currentUser = getUser();
     if (currentUser) {
       this.setState({ isLoggedIn: true });
+      this.props.getWorkspaces();
+      this.props.getProjects();
+      this.props.getTeams();
+      this.props.getUsers();
+      this.props.getTasks();
     }
   }
 
@@ -39,7 +49,7 @@ class Login extends Component {
       await auth.authenticate(credentials);
       const { token, user } = auth;
 
-      this.props.loginAction(user, token);
+      this.props.loginUser(user, token);
 
       let pathname = "/dashboard/workspace";
       const { state } = this.props.location;
@@ -107,10 +117,17 @@ class Login extends Component {
     );
   }
 }
-
+const mapDispatchToProps = dispatch => ({
+  loginUser: (user, token) => dispatch(loginAction(user, token)),
+  getWorkspaces: () => dispatch(fetchWorkspaces()),
+  getTeams: () => dispatch(fetchTeams()),
+  getUsers: () => dispatch(fetchUsers()),
+  getProjects: () => dispatch(fetchProjects()),
+  getTasks: () => dispatch(fetchTasks())
+});
 export default connect(
   null,
-  { loginAction }
+  mapDispatchToProps
 )(Login);
 
 const container = {

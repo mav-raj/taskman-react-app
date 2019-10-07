@@ -12,12 +12,11 @@ class User extends Component {
     email: "",
     password: ""
   };
-  modalInstance = {};
 
   componentDidMount() {
     this.props.getUsers();
     let modal = document.querySelectorAll(".modal");
-    this.modalInstance = M.Modal.init(modal, {});
+    M.Modal.init(modal, {});
   }
 
   // componentDidUpdate(prevProps, prevState) {
@@ -69,7 +68,7 @@ class User extends Component {
             )}
             <li className="collection-item">
               <a className="modal-trigger" href="#add">
-                Add User
+                Add more users
               </a>
             </li>
           </ul>
