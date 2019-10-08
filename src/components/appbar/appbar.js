@@ -3,12 +3,22 @@ import { NavLink } from "react-router-dom";
 import M from "materialize-css";
 import "./appbar.css";
 
+import { connect } from "react-redux";
+
 import { deleteUser } from "../../api/storage";
+import { logoutAction } from "../../actions/authActions";
 
 class Appbar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
+  state = {
+    loggedInUser: {
+      name: ""
+    }
+  };
+
+  componentDidMount() {
+    this.setState({
+      loggedInUser: this.props.auth.user
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -17,10 +27,12 @@ class Appbar extends Component {
   }
 
   handleLogoutClick = () => {
-    deleteUser();
+    this.props.logoutUser();
   };
 
   render() {
+    const { loggedInUser } = this.state;
+
     return (
       <div>
         <ul id="dropdown1" className="dropdown-content">
@@ -40,49 +52,57 @@ class Appbar extends Component {
             >
               Taskman
             </NavLink>
+
             <ul className="right hide-on-med-and-down">
-              <li>
-                <NavLink
-                  activeClassName="active"
-                  exact
-                  className="nav-link"
-                  to="/dashboard/workspace"
-                >
-                  Workspaces
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  activeClassName="active"
-                  exact
-                  className="nav-link"
-                  to="/dashboard/team"
-                >
-                  Teams
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  activeClassName="active"
-                  exact
-                  className="nav-link"
-                  to="/dashboard/user"
-                >
-                  Users
-                </NavLink>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="material-icons">notifications</i>
-                </a>
-              </li>
+              {loggedInUser && loggedInUser.role === "admin" ? (
+                <span>
+                  <li>
+                    <NavLink
+                      activeClassName="active"
+                      exact
+                      className="nav-link"
+                      to="/dashboard/workspace"
+                    >
+                      Workspaces
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      activeClassName="active"
+                      exact
+                      className="nav-link"
+                      to="/dashboard/team"
+                    >
+                      Teams
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      activeClassName="active"
+                      exact
+                      className="nav-link"
+                      to="/dashboard/user"
+                    >
+                      Users
+                    </NavLink>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i className="material-icons">notifications</i>
+                    </a>
+                  </li>
+                </span>
+              ) : null}
+
               <li style={avatarContainer}>
                 <a
                   className="dropdown-trigger"
                   data-target="dropdown1"
                   style={avatarCustom}
                 >
-                  A
+                  {loggedInUser.name !== ""
+                    ? loggedInUser.name.split("")[0]
+                    : null}
                 </a>
               </li>
             </ul>
@@ -93,8 +113,14 @@ class Appbar extends Component {
   }
 }
 
-// const mapStateToProps = ({}) => ({});
-export default Appbar;
+const mapStateToProps = ({ auth }) => ({ auth });
+const mapDispatchToProps = dispatch => ({
+  logoutUser: () => dispatch(logoutAction())
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Appbar);
 
 // Styles
 

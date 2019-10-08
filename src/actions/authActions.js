@@ -6,7 +6,7 @@ import { saveUser, deleteUser } from "../api/storage";
 
 export const loginAction = (user, token) => async dispatch => {
   try {
-    saveUser(user.id, token);
+    saveUser(user, token);
     dispatch({
       type: LOGIN,
       payload: { user, token }

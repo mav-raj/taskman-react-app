@@ -1,10 +1,10 @@
 const KEY = "userToken";
 
-export const saveUser = (userId, token) => {
+export const saveUser = (user, token) => {
   if (getUser()) {
     return;
   }
-  localStorage.setItem(KEY, JSON.stringify({ userId, token }));
+  localStorage.setItem(KEY, JSON.stringify({ user, token }));
 };
 
 export const deleteUser = () => {

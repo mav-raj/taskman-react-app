@@ -22,3 +22,6 @@ export const ADD_NEW_PROJECT = "ADD_NEW_PROJECT";
 // task actions
 export const GET_ALL_TASK = "GET_ALL_TASKS";
 export const ADD_NEW_TASK = "ADD_NEW_TASK";
+
+//action for not admin users
+export const GET_USER_TASK = "GET_USER_TASK";

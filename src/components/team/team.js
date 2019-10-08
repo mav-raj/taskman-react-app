@@ -53,9 +53,9 @@ class Team extends Component {
           <span style={{ fontWeight: "bold", fontSize: "18px" }}>{name}</span>
           <br />
           <span style={{ marginLeft: "5px" }}>{description}</span>
-          <a href="#!" className="secondary-content">
+          <NavLink to={`/dashboard/team/${id}`} className="secondary-content">
             <i className="material-icons">arrow_forward</i>
-          </a>
+          </NavLink>
         </div>
       </li>
     );

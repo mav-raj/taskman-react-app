@@ -1,0 +1,24 @@
+.cus-badge-warn {
+  padding: 5px;
+  background-color: yellow;
+  color: #222;
+  border-radius: 5px;
+  width: 95px;
+  text-align: center;
+}
+.cus-badge-normal {
+  padding: 5px;
+  background-color: rgb(47, 105, 214);
+  color: #fff;
+  border-radius: 5px;
+  width: 95px;
+  text-align: center;
+}
+.cus-badge-danger {
+  padding: 5px;
+  background-color: red;
+  color: #fff;
+  border-radius: 5px;
+  width: 95px;
+  text-align: center;
+}

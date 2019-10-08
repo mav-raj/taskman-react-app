@@ -1,12 +1,14 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import Store from "../../store/store";
 
-import { getUser } from "../../api/storage";
+// import { getUser } from "../../api/storage";
 
 const PrivateRoute = ({ component: Component, admin, ...rest }) => {
-  const user = getUser();
+  // const user = getUser();
+  const store = Store.getState();
 
-  let result = user ? true : false;
+  let result = store.auth.user ? true : false;
 
   return (
     <Route

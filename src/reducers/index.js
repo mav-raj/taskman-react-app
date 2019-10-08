@@ -5,23 +5,25 @@ import workspaceReducer from "./workspaceReducer";
 import teamReducer from "./teamReducer";
 import projectReducer from "./projectReducer";
 import taskReducer from "./taskReducer";
+import userTaskReducer from "./userTaskReducer";
 
-export default combineReducers({
+import { LOGOUT } from "../actions/actionTypes";
+
+const appReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   workspace: workspaceReducer,
   team: teamReducer,
   project: projectReducer,
-  task: taskReducer
+  task: taskReducer,
+  userTasks: userTaskReducer
 });
 
-// const rootReducer = (state, action) => {
-//   if (action.type === "SIGNOUT_REQUEST") {
-//     // for all keys defined in your persistConfig(s)
-//     storage.removeItem("persist:root");
-//     // storage.removeItem('persist:otherKey')
+const rootReducer = (state, action) => {
+  if (action.type === LOGOUT) {
+    state = {};
+  }
+  return appReducer(state, action);
+};
 
-//     state = undefined;
-//   }
-//   return appReducer(state, action);
-// };
+export default rootReducer;

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import M from "materialize-css";
-
+import "./singleProject.css";
 // actions
 import { addNewTask, fetchTasks } from "../../../actions/taskAction";
 
@@ -88,20 +88,56 @@ class SingleProject extends Component {
     // console.log(this.selectInstance);
   };
 
-  renderTask = (id, name, description) => {
+  renderTask = (id, name, description, start_time, end_time, user_assigned) => {
+    let flag = "";
+    let currentTime = new Date();
+    let startTime = new Date(start_time);
+    let endTime = new Date(end_time);
+    if (currentTime < startTime) {
+      flag = "yet to start";
+    } else {
+      if (currentTime < endTime) {
+        flag = "ongoing";
+      } else {
+        flag = "exceded";
+      }
+    }
+    console.log(flag);
+
     return (
       <li className="collection-item" key={id}>
-        <div>
+        <div className="collection-list">
           <span style={{ fontWeight: "bold", fontSize: "18px" }}>{name}</span>
           <br />
-          <span style={{ marginLeft: "5px" }}>{description}</span>
-          <NavLink
+          {/* <span style={{ marginLeft: "5px" }}>{description}</span> */}
+          <span>Start: {new Date(start_time).toLocaleDateString()}</span>
+          <br />
+          <span>End: {new Date(end_time).toLocaleDateString()}</span>
+          <br />
+          {flag === "yet to start" ? (
+            <span>
+              <div className="cus-badge-normal">not started</div>
+            </span>
+          ) : flag === "ongoing" ? (
+            <span>
+              <div className="cus-badge-warn">ongoing</div>
+            </span>
+          ) : (
+            <span>
+              <div className="cus-badge-danger">exceded</div>
+            </span>
+          )}
+          <br />
+          <span>
+            User Assigned: {user_assigned.name} {user_assigned.email}
+          </span>
+          {/* <NavLink
             exact
             to={`/dashboard/workspace/project/task/${id}`}
             className="secondary-content"
           >
             <i className="material-icons">arrow_forward</i>
-          </NavLink>
+          </NavLink> */}
         </div>
       </li>
     );
@@ -135,7 +171,14 @@ class SingleProject extends Component {
               )}
             </li>
             {tasks.map(task =>
-              this.renderTask(task._id, task.name, task.description)
+              this.renderTask(
+                task._id,
+                task.name,
+                task.description,
+                task.start_time,
+                task.end_time,
+                task.user_assigned
+              )
             )}
 
             <li className="collection-item">

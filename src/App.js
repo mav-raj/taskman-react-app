@@ -6,12 +6,13 @@ import { Switch, Route, withRouter } from "react-router-dom";
 import Appbar from "./components/appbar/appbar";
 import Login from "./components/login/login";
 import PrivateRoute from "./components/privateRoute/privateRoute";
-// import Dashboard from "./components/dashboard/dashboard";
+import UserDashboard from "./components/userDashboard/userDashboard";
 import Workspace from "./components/workspace/workspace";
 import Team from "./components/team/team";
 import User from "./components/user/user";
 import SingleWorkspace from "./components/workspace/singleWorkspace";
 import SingleProject from "./components/workspace/project/singleProject";
+import SingleTeam from "./components/team/singleTeam/singleTeam";
 
 //
 class App extends Component {
@@ -22,6 +23,11 @@ class App extends Component {
         {this.props.location.pathname !== "/" ? <Appbar /> : ""}
         <Switch>
           <Route path="/" exact component={Login} />
+          <PrivateRoute
+            path="/user/dashboard"
+            exact
+            component={UserDashboard}
+          />
           <PrivateRoute
             path="/dashboard/workspace"
             exact
@@ -36,6 +42,11 @@ class App extends Component {
             path="/dashboard/workspace/project/:id"
             exact
             component={SingleProject}
+          />
+          <PrivateRoute
+            path="/dashboard/team/:id"
+            exact
+            component={SingleTeam}
           />
           <PrivateRoute path="/dashboard/team" exact component={Team} />
           <PrivateRoute path="/dashboard/user" exact component={User} />

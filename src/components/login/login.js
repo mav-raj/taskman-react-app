@@ -12,6 +12,7 @@ import { fetchTeams } from "../../actions/teamsAction";
 import { fetchUsers } from "../../actions/userAction";
 import { fetchProjects } from "../../actions/projectsAction";
 import { fetchTasks } from "../../actions/taskAction";
+import { fetchUserTasksById } from "../../actions/userTaskAction";
 
 import { connect } from "react-redux";
 
@@ -21,19 +22,32 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
-      isLoggedIn: false
+      isLoggedIn: false,
+      isAdmin: false
     };
   }
 
   componentDidMount() {
-    const currentUser = getUser();
-    if (currentUser) {
-      this.setState({ isLoggedIn: true });
+    let currentUser = {
+      token: "",
+      user: {}
+    };
+    currentUser = getUser();
+    console.log(currentUser);
+
+    if (currentUser.user && currentUser.user.role === "admin") {
+      this.setState({ isLoggedIn: true, isAdmin: true });
+      this.props.loginUser(currentUser.user, currentUser.token);
       this.props.getWorkspaces();
       this.props.getProjects();
       this.props.getTeams();
       this.props.getUsers();
       this.props.getTasks();
+    }
+    if (currentUser.user && currentUser.user.role === "user") {
+      this.setState({ isLoggedIn: true, isAdmin: false });
+      this.props.loginUser(currentUser.user, currentUser.token);
+      this.props.getUserTasksById(currentUser.user.id);
     }
   }
 
@@ -50,8 +64,12 @@ class Login extends Component {
       const { token, user } = auth;
 
       this.props.loginUser(user, token);
-
-      let pathname = "/dashboard/workspace";
+      let pathname = "";
+      if (user.role === "admin") {
+        pathname = "/dashboard/workspace";
+      } else {
+        pathname = "/user/dashboard";
+      }
       const { state } = this.props.location;
       if (state) {
         pathname = state.from.pathname;
@@ -64,16 +82,14 @@ class Login extends Component {
   };
 
   render() {
-    const { email, password, isLoggedIn } = this.state;
+    const { email, password, isLoggedIn, isAdmin } = this.state;
 
     return !isLoggedIn ? (
       <div style={container}>
         <div style={cardContainer} className="card">
           <div className="row">
             <div className="col s12 center">
-              <span style={{ fontSize: "20px", color: "#222" }}>
-                User Login
-              </span>
+              <span style={{ fontSize: "20px", color: "#222" }}>Login</span>
             </div>
             <div className="col s12">
               <div className="row">
@@ -112,8 +128,10 @@ class Login extends Component {
           </div>
         </div>
       </div>
-    ) : (
+    ) : isAdmin ? (
       <Redirect to="/dashboard/workspace" />
+    ) : (
+      <Redirect to="/user/dashboard" />
     );
   }
 }
@@ -123,7 +141,8 @@ const mapDispatchToProps = dispatch => ({
   getTeams: () => dispatch(fetchTeams()),
   getUsers: () => dispatch(fetchUsers()),
   getProjects: () => dispatch(fetchProjects()),
-  getTasks: () => dispatch(fetchTasks())
+  getTasks: () => dispatch(fetchTasks()),
+  getUserTasksById: id => dispatch(fetchUserTasksById(id))
 });
 export default connect(
   null,
@@ -141,6 +160,6 @@ const container = {
 
 const cardContainer = {
   width: "500px",
-  height: "310px",
+  height: "270px",
   padding: "15px"
 };
