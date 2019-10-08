@@ -5,16 +5,17 @@ import { fetchUserTasksById } from "../../actions/userTaskAction";
 import { getUser } from "../../api/storage";
 import { putTaskCompleteById } from "../../api/user";
 class UserDashboard extends Component {
+  userId = "";
   componentDidMount() {
     let currentUser = {
       token: "",
       user: {}
     };
     currentUser = getUser();
-    console.log(currentUser);
+    this.userId = currentUser.user.id;
 
     if (currentUser.user) {
-      this.props.getUserTasksById(currentUser.user.id);
+      this.props.getUserTasksById(this.userId);
     }
   }
 
@@ -22,6 +23,7 @@ class UserDashboard extends Component {
     try {
       let updatedTask = await putTaskCompleteById(taskId);
       console.log(updatedTask);
+      this.props.getUserTasksById(this.userId);
     } catch (e) {
       window.alert("Error updating task");
       console.log(e);
@@ -41,21 +43,20 @@ class UserDashboard extends Component {
     let currentTime = new Date();
     let startTime = new Date(start_time);
     let endTime = new Date(end_time);
-    console.log(isUpdated);
 
     if (isUpdated) {
       flag = "completed";
-    }
-    if (currentTime < startTime) {
-      flag = "yet to start";
     } else {
-      if (currentTime < endTime) {
-        flag = "ongoing";
+      if (currentTime < startTime) {
+        flag = "yet to start";
       } else {
-        flag = "exceded";
+        if (currentTime < endTime) {
+          flag = "ongoing";
+        } else {
+          flag = "exceded";
+        }
       }
     }
-    console.log(flag);
 
     return (
       <li className="collection-item" key={id}>

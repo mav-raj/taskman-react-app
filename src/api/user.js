@@ -58,7 +58,8 @@ export const getUserTasksById = async userid => {
 
 export const putTaskCompleteById = async taskid => {
   const token = getAuthToken();
-  let res = await axios.put(`${USER_URL}/task/${taskid}`, {
+
+  let res = await axios.put(`${USER_URL}/task/${taskid}`, null, {
     headers: {
       Authorization: token
     }
