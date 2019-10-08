@@ -39,6 +39,7 @@ code {
   border-radius: 5px;
   width: 95px;
   text-align: center;
+  cursor: pointer;
 }
 .cus-badge-normal {
   padding: 5px;
@@ -47,6 +48,7 @@ code {
   border-radius: 5px;
   width: 95px;
   text-align: center;
+  cursor: pointer;
 }
 .cus-badge-danger {
   padding: 5px;
@@ -55,4 +57,14 @@ code {
   border-radius: 5px;
   width: 95px;
   text-align: center;
+  cursor: pointer;
+}
+.cus-badge-safe {
+  padding: 5px;
+  background-color: rgb(48, 145, 48);
+  color: #fff;
+  border-radius: 5px;
+  width: 95px;
+  text-align: center;
+  cursor: pointer;
 }

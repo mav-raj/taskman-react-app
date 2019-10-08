@@ -1,4 +1,4 @@
-import { GET_USER_TASK } from "../actions/actionTypes";
+import { GET_USER_TASK, PUT_TASK_COMPLETE } from "../actions/actionTypes";
 const initialState = {
   tasks: []
 };

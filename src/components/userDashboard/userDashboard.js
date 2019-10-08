@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchUserTasksById } from "../../actions/userTaskAction";
+// apis
 import { getUser } from "../../api/storage";
+import { putTaskCompleteById } from "../../api/user";
 class UserDashboard extends Component {
   componentDidMount() {
     let currentUser = {
@@ -15,11 +17,35 @@ class UserDashboard extends Component {
       this.props.getUserTasksById(currentUser.user.id);
     }
   }
-  renderTask = (id, name, description, start_time, end_time, user_assigned) => {
+
+  handleFlagClick = async taskId => {
+    try {
+      let updatedTask = await putTaskCompleteById(taskId);
+      console.log(updatedTask);
+    } catch (e) {
+      window.alert("Error updating task");
+      console.log(e);
+    }
+  };
+
+  renderTask = (
+    id,
+    name,
+    description,
+    start_time,
+    end_time,
+    user_assigned,
+    isUpdated
+  ) => {
     let flag = "";
     let currentTime = new Date();
     let startTime = new Date(start_time);
     let endTime = new Date(end_time);
+    console.log(isUpdated);
+
+    if (isUpdated) {
+      flag = "completed";
+    }
     if (currentTime < startTime) {
       flag = "yet to start";
     } else {
@@ -43,15 +69,39 @@ class UserDashboard extends Component {
           <br />
           {flag === "yet to start" ? (
             <span>
-              <div className="cus-badge-normal">not started</div>
+              <div
+                className="cus-badge-normal"
+                onClick={() => this.handleFlagClick(id)}
+              >
+                not started
+              </div>
             </span>
           ) : flag === "ongoing" ? (
             <span>
-              <div className="cus-badge-warn">ongoing</div>
+              <div
+                className="cus-badge-warn"
+                onClick={() => this.handleFlagClick(id)}
+              >
+                ongoing
+              </div>
+            </span>
+          ) : flag === "exceded" ? (
+            <span>
+              <div
+                className="cus-badge-danger"
+                onClick={() => this.handleFlagClick(id)}
+              >
+                exceded
+              </div>
             </span>
           ) : (
             <span>
-              <div className="cus-badge-danger">exceded</div>
+              <div
+                className="cus-badge-safe"
+                onClick={() => this.handleFlagClick(id)}
+              >
+                completed
+              </div>
             </span>
           )}
           <br />
@@ -65,7 +115,7 @@ class UserDashboard extends Component {
     return (
       <div className="container">
         <ul className="collection with-header">
-          <li className="collec tion-header">
+          <li className="collection-header">
             {tasks.length === 0 ? (
               <h5>No tasks assigned to you yet. Enjoy!!</h5>
             ) : (
@@ -79,7 +129,8 @@ class UserDashboard extends Component {
               task.description,
               task.start_time,
               task.end_time,
-              task.user_assigned
+              task.user_assigned,
+              task.isUpdated
             )
           )}
         </ul>

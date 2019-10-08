@@ -55,3 +55,13 @@ export const getUserTasksById = async userid => {
   });
   return res.data;
 };
+
+export const putTaskCompleteById = async taskid => {
+  const token = getAuthToken();
+  let res = await axios.put(`${USER_URL}/task/${taskid}`, {
+    headers: {
+      Authorization: token
+    }
+  });
+  return res.data;
+};
